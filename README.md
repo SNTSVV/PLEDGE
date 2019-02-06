@@ -19,10 +19,10 @@ In a nutshell, PLEDGE works by first transforming all the constraints ascribed t
 
 2.	The inputs for PLEDGE can be set via the solver.properties file. The file is under **main_directory/config/**. The solver file includes the following properties: 
     
-    •	**modelFolder**: specifies the location of the UML class diagram (.uml file)
-    •	**OCLconstraintsPath**: points to the file containing the OCL constraints to solve (.ocl file)
-    •	**searchMaxIteration**: defines the maximum number of iterations that search can execute 
-    •	**nonEmptinessConstraint**: contains the non-emptiness constraint for excluding vacious solutions
+- **modelFolder**: specifies the location of the UML class diagram (.uml file)
+- **OCLconstraintsPath**: points to the file containing the OCL constraints to solve (.ocl file)
+- **searchMaxIteration**: defines the maximum number of iterations that search can execute 
+- **nonEmptinessConstraint**: contains the non-emptiness constraint for excluding vacious solutions
 
 We provide default configuration files under **main_directory/config/**: configForCaseA.properties, configForCaseB.properties, and configForCaseC.properties. For example, copy and paste the content of configForCaseB.properties into solver.properties file to ask the tool to generate test data for the case staudy denoted Case B.
 
