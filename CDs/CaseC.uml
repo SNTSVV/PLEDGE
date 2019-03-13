@@ -505,7 +505,7 @@ self.virtualChannelId = self.vcdu.cadu.channelData.transmissionData.configuratio
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Rvoj81VUEeWRIqLs5_0Tzg" value="1"/>
     </ownedAttribute>
     <ownedAttribute xmi:id="_Rvoj9VVUEeWRIqLs5_0Tzg" name="vcdu" visibility="private" type="_RvokDVVUEeWRIqLs5_0Tzg" association="_RvomG1VUEeWRIqLs5_0Tzg">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Rvoj91VUEeWRIqLs5_0Tzg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Rvoj91VUEeWRIqLs5_0Tzg"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Rvoj9lVUEeWRIqLs5_0Tzg" value="1"/>
     </ownedAttribute>
     <ownedAttribute xmi:id="_Rvoj-FVUEeWRIqLs5_0Tzg" name="vcduHeaderAsString" visibility="private">
@@ -1146,7 +1146,7 @@ self.actualValue.byte = self.calculatedValue.byte&#xD;
       <body>Multiplexing Protocol Data Unit (M_PDU) Packet Zone</body>
     </ownedComment>
     <ownedAttribute xmi:id="_Rvok4lVUEeWRIqLs5_0Tzg" name="vcdu" visibility="private" type="_RvokDVVUEeWRIqLs5_0Tzg" association="_RvomHFVUEeWRIqLs5_0Tzg">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Rvok5FVUEeWRIqLs5_0Tzg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Rvok5FVUEeWRIqLs5_0Tzg"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Rvok41VUEeWRIqLs5_0Tzg" value="1"/>
     </ownedAttribute>
   </packagedElement>
@@ -1592,7 +1592,7 @@ endif&#xD;
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RvolbVVUEeWRIqLs5_0Tzg" value="1"/>
     </ownedAttribute>
     <ownedAttribute xmi:id="_Rvolb1VUEeWRIqLs5_0Tzg" name="vcdu" visibility="private" type="_RvokDVVUEeWRIqLs5_0Tzg" aggregation="composite" association="_RvomKlVUEeWRIqLs5_0Tzg">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RvolcVVUEeWRIqLs5_0Tzg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_RvolcVVUEeWRIqLs5_0Tzg"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_RvolcFVUEeWRIqLs5_0Tzg" value="1"/>
     </ownedAttribute>
     <ownedAttribute xmi:id="_RvolclVUEeWRIqLs5_0Tzg" name="prev" visibility="private" type="_RvolZVVUEeWRIqLs5_0Tzg" association="_RvomK1VUEeWRIqLs5_0Tzg">

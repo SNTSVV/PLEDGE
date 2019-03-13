@@ -1,156 +1,8 @@
 import '{Put path to the underlying CD}'
+--e.g., import 'file:/Users/User_X/CD_Case_C.uml'
+
 package inputData 
- context Cadu inv invextracted6:
 
-let caduFrameCount : Integer =  self.vcdu.vcduHeader.virtualChannelFrameCount.intValue in 
-let	prevCaduFrameCount : Integer = self.prevOnChannel.vcdu.vcduHeader.virtualChannelFrameCount.intValue in 
-
-not self.prevOnChannel.oclIsUndefined()
-and
-prevCaduFrameCount <= 16777215 
-and
-caduFrameCount <> prevCaduFrameCount + 1  
-
-context Isp inv invextracted15:
-let config : Configuration = self.mpduActivePacketZone->first().vcdu.cadu.channelData.transmissionData.configuration in
-let	counterWrapValue : Set(ApidSuffixAndMaxCounter) = config.maxCounterPerApidSuffixConfig.apidSuffixAndMaxCounter->select(x : ApidSuffixAndMaxCounter | x.apidSuffix.value.intValue = self.packetPrimaryHeader.apidPcat.value.intValue) 
-in 
-not self.packetDataField.oclIsTypeOf(IdlePacketDataField)
-	
-implies 
-
-counterWrapValue->size() = 1 
-
-and 
-
-self.packetPrimaryHeader.sequenceCount.intValue <= counterWrapValue->asOrderedSet()->first().maxSscCounterValue
-
- context Isp inv invextracted21:
-let prevIsp : Isp = self.prevOnChannelOfSameApid in 
-
-prevIsp.packetDataField.oclIsTypeOf(ActivePacketDataField)  = true and 
-self.packetDataField.oclIsTypeOf(ActivePacketDataField)  = true and 
-prevIsp.packetDataField.oclAsType(ActivePacketDataField).packetSecondaryHeader.oclIsTypeOf(SarS1DataFieldHeader)  = true and 
-self.packetDataField.oclAsType(ActivePacketDataField).packetSecondaryHeader.oclIsTypeOf(SarS1DataFieldHeader)  = true 
-
-implies 
-
-prevIsp.packetDataField.oclAsType(ActivePacketDataField).packetSecondaryHeader.oclAsType(SarS1DataFieldHeader).tcCoarseTime.intValue <   
-	self.packetDataField.oclAsType(ActivePacketDataField).packetSecondaryHeader.oclAsType(SarS1DataFieldHeader).tcCoarseTime.intValue 
-or 
-( 
-	prevIsp.packetDataField.oclAsType(ActivePacketDataField).packetSecondaryHeader.oclAsType(SarS1DataFieldHeader).tcCoarseTime.intValue = 
-		self.packetDataField.oclAsType(ActivePacketDataField).packetSecondaryHeader.oclAsType(SarS1DataFieldHeader).tcCoarseTime.intValue 
-	and 
-	prevIsp.packetDataField.oclAsType(ActivePacketDataField).packetSecondaryHeader.oclAsType(SarS1DataFieldHeader).tcFineTime.intValue <= 
-		self.packetDataField.oclAsType(ActivePacketDataField).packetSecondaryHeader.oclAsType(SarS1DataFieldHeader).tcFineTime.intValue 
-) 
-
- context Isp inv invextracted25:
-self.packetDataField.oclIsTypeOf(IdlePacketDataField) 
-
- context Isp inv invextracted29:
-self.packetDataField.oclAsType(IdlePacketDataField).idleDataArray.byte->asOrderedSet()->at(1).intValue <> 85 
-and
-self.packetDataField.oclAsType(IdlePacketDataField).idleDataArray.byte->asOrderedSet()->at(2).intValue <> 85 
-and
-self.packetDataField.oclAsType(IdlePacketDataField).idleDataArray.byte->asOrderedSet()->at(3).intValue <> 85 
-and
-self.packetDataField.oclAsType(IdlePacketDataField).idleDataArray.byte->asOrderedSet()->at(4).intValue <> 85
-and 
-self.packetDataField.oclAsType(IdlePacketDataField).idleDataArray.byte->size()> 32
-
-context MpduActiveHeader inv invextracted57:
-not self.firstHeaderPointer.oclIsUndefined()
-and
-(
-self.firstHeaderPointer.intValue = 2047 
-or 
-self.firstHeaderPointer.intValue < 1902
-)
-
-context PacketErrorControl inv invextracted62:
-let transmissionData : TransmissionData  = self.activePacketDataField.isp.mpduActivePacketZone->first().vcdu.cadu.channelData.transmissionData in
-let rtstpsConfig : XsveRtStps = transmissionData.configuration.rtStpsConfig.xsveRtStps in 
-
-rtstpsConfig.checkCrc 
-and (rtstpsConfig.missionName <> MissionName::Sentinel1 
-	or (self.activePacketDataField.isp.packetPrimaryHeader.apidPid.value.intValue*16 
-	+ self.activePacketDataField.isp.packetPrimaryHeader.apidPcat.value.intValue) <> 1052) 
-
- context PacketPrimaryHeader inv invextracted67:
-let transmissionData : TransmissionData = self.isp.mpduActivePacketZone->first().vcdu.cadu.channelData.transmissionData in 
-let rtStpsConfig : XsveRtStps = transmissionData.configuration.rtStpsConfig.xsveRtStps in
-
-(self.apidPid.value.intValue*16 + self.apidPcat.value.intValue <> transmissionData.configuration.rtStpsConfig.xsveRtStps.idleApid.value.intValue implies 
-self.shf.intValue = 1 or self.shf.intValue = 0)
-and
-(self.dataLength.intValue + 6 + 1).mod(4) <> 0 
-and
-self.type.intValue <> 0 
-and
-self.versionNumber.intValue <> 0 
-and
-self.apidPid.value.intValue*16 + self.apidPcat.value.intValue <> rtStpsConfig.idleApid.value.intValue 
-and
-self.sequenceFlags.intValue <> 3 
-
-context PacketSecondaryHeader inv alloy_isUsingCorrectMissionIspInfo: PacketSecondaryHeader.allInstances()->forAll(e : PacketSecondaryHeader | e.activePacketDataField.isp.mpduActivePacketZone.vcdu.cadu.channelData.transmissionData.configuration.validApidsConfig.ispInfo->exists(x : IspInfo | e.activePacketDataField.isp.mpduActivePacketZone.vcdu.cadu.channelData.transmissionData.configuration.rtStpsConfig.xsveRtStps->exists(y : XsveRtStps | y.missionName = x.missionName)))
-
-context PacketSecondaryHeader inv alloy_isSecondaryHeaderMatchingPacketType: PacketSecondaryHeader.allInstances()->forAll(e : PacketSecondaryHeader | e.activePacketDataField.isp.mpduActivePacketZone.vcdu.cadu.channelData.transmissionData.configuration.validApidsConfig.ispInfo->exists(x : IspInfo | (x.packetType = IspPacketTypes::S1_SAR) and e.oclIsTypeOf(SarS1DataFieldHeader) or (x.packetType = IspPacketTypes::S1_GPSR) and e.oclIsTypeOf(TmGpsrS1DataFieldHeader) or (x.packetType = IspPacketTypes::S2_CSW) and e.oclIsTypeOf(TmCswS2DataFieldHeader) or (x.packetType = IspPacketTypes::S2_GPSR) and e.oclIsTypeOf(TmGpsrS2DataFieldHeader) or (x.packetType = IspPacketTypes::S2_MSI) and e.oclIsTypeOf(MsiS2DataFieldHeader) or (x.packetType = IspPacketTypes::S2_STR) and e.oclIsTypeOf(TmStrS2DataFieldHeader) or (x.packetType = IspPacketTypes::S3_OLCI) and e.oclIsTypeOf(OlciS3DataFieldHeader) or (x.packetType = IspPacketTypes::S3_DORIS) and e.oclIsTypeOf(DorisS3DateFieldHeader) or (x.packetType = IspPacketTypes::S3_MWR) and e.oclIsTypeOf(MwrS3DataFieldHeader) or (x.packetType = IspPacketTypes::S3_GPSR) and e.oclIsTypeOf(TmGpsrS3DataFieldHeader) or (x.packetType = IspPacketTypes::S3_SLSTR) and e.oclIsTypeOf(SlstrS3DataFieldHeader) or (x.packetType = IspPacketTypes::S3_NAVATT) and e.oclIsTypeOf(TmNavattS3DataFieldHeader) or (x.packetType = IspPacketTypes::S3_SRAL) and e.oclIsTypeOf(SralS3DataFieldHeader)))
-
-context PacketSecondaryHeader inv alloy_isApidValueMatchingIspInfo: PacketSecondaryHeader.allInstances()->forAll(e : PacketSecondaryHeader | e.activePacketDataField.isp.mpduActivePacketZone.vcdu.cadu.channelData.transmissionData.configuration.validApidsConfig.ispInfo->exists(x : IspInfo | ((x.missionName = MissionName::Sentinel1 or x.missionName = MissionName::Sentinel2) and x.apidValue->exists(y : Apid | y.apidPid = e.activePacketDataField.isp.packetPrimaryHeader.apidPid and y.apidPcat = e.activePacketDataField.isp.packetPrimaryHeader.apidPcat)) or x.missionName = MissionName::Sentinel3 and x.pidValue->exists(pid : ApidPid | pid = e.activePacketDataField.isp.packetPrimaryHeader.apidPid) and x.pcatValue->exists(pcat : ApidPcat | pcat = e.activePacketDataField.isp.packetPrimaryHeader.apidPcat)))
-
- context Sync inv invextracted91:
- self.value.byte->size()>10 and
-self.value.byte->asOrderedSet()->at(1).intValue = 26 and 
-self.value.byte->asOrderedSet()->at(2).intValue = -49 and 
-self.value.byte->asOrderedSet()->at(3).intValue = -4 and 
-self.value.byte->asOrderedSet()->at(4).intValue = 29
-
- context VcduHeader inv invextracted124:
-self.virtualChannelId.value.intValue >= 0 and self.virtualChannelId.value.intValue <= 63
-
- context Vcdu inv invextracted92:
-self.mpduHeader.oclAsType(MpduIdleHeader).value.byte->size()>4 
-and
-self.vcduHeader.virtualChannelId.value.intValue = self.cadu.channelData.transmissionData.configuration.rtStpsConfig.xsveRtStps.idleVcid.value.intValue 
- 
-implies 
-
-(
-self.mpduHeader.oclAsType(MpduIdleHeader).value.byte->asOrderedSet()->at(1).intValue = 7 
-and 
-self.mpduHeader.oclAsType(MpduIdleHeader).value.byte->asOrderedSet()->at(2).intValue = -2 
-and 
-self.mpduPacketZone.oclIsTypeOf(MpduIdlePacketZone) 
-and 
-self.mpduPacketZone.oclAsType(MpduIdlePacketZone).value.byte->asOrderedSet()->at(1).intValue = -1 
-and 
-self.mpduPacketZone.oclAsType(MpduIdlePacketZone).value.byte->asOrderedSet()->at(2).intValue = -3 
-and 
-self.mpduPacketZone.oclAsType(MpduIdlePacketZone).value.byte->asOrderedSet()->at(3).intValue = 89 
-and 
-self.mpduPacketZone.oclAsType(MpduIdlePacketZone).value.byte->asOrderedSet()->at(4).intValue = 123 
-)
-or 
-(
-self.mpduHeader.oclAsType(MpduIdleHeader).value.byte->asOrderedSet()->at(1).intValue = 7 
-and
-self.mpduHeader.oclAsType(MpduIdleHeader).value.byte->asOrderedSet()->at(2).intValue = -2 
-and
-self.mpduPacketZone.oclIsTypeOf(MpduIdlePacketZone) 
-and
-self.mpduPacketZone.oclAsType(MpduIdlePacketZone).value.byte->asOrderedSet()->at(1).intValue <> -1 
-and
-self.mpduPacketZone.oclAsType(MpduIdlePacketZone).value.byte->asOrderedSet()->at(2).intValue <> -3 
-and
-self.mpduPacketZone.oclAsType(MpduIdlePacketZone).value.byte->asOrderedSet()->at(3).intValue <> 89 
-and
-self.mpduPacketZone.oclAsType(MpduIdlePacketZone).value.byte->asOrderedSet()->at(4).intValue <> 123 
-and
-self.mpduHeader.oclAsType(MpduIdleHeader).value.byte->asOrderedSet()->at(1).intValue <> 7 
-)
 
  context Vcdu inv invextracted108:
 let transmissionData : TransmissionData = self.cadu.channelData.transmissionData in 
@@ -169,8 +21,6 @@ not self.cadu.oclIsUndefined()
  context Vcdu inv invGenMult4:
 not self.mpduHeader.oclIsUndefined()
 
- context MpduPacketZone inv invGenMult5:
-not self.vcdu.oclIsUndefined()
 
  context MpduIdlePacketZone inv invGenMult6:
 not self.value.oclIsUndefined()
@@ -601,8 +451,6 @@ not self.sync.oclIsUndefined()
  context Cadu inv invGenMult148:
 not self.reedSolomonCoding.oclIsUndefined()
 
- context Cadu inv invGenMult149:
-not self.vcdu.oclIsUndefined()
 
  context Cadu inv invGenMult150:
 not self.channelData.oclIsUndefined()
@@ -742,12 +590,6 @@ not self.signFieldRsvdSpare.oclIsUndefined()
  context VcduHeader inv invGenMult195:
 not self.frameHeaderErrorControl.oclIsUndefined()
 
- context VcduHeader inv invGenMult196:
-not self.vcdu.oclIsUndefined()
-
- context MpduHeader inv invGenMult197:
-not self.vcdu.oclIsUndefined()
-
  context MpduIdleHeader inv invGenMult198:
 not self.value.oclIsUndefined()
 
@@ -780,5 +622,8 @@ not self.value.oclIsUndefined()
 
 context ChannelData inv invextracted1:
 self.cadu->size() > 0
+
+
+
 
 endpackage
