@@ -37,8 +37,8 @@ We provide default configuration files under **main_directory/config/**: configF
 
 # Changelog
 
-Version | Description  
---------------------------------------- | ---------------------------------------
-1.0 | First prototype of the tool (tested over the three case studies of the paper "Practical Model-driven Data Generation for System Testing" available at [link](https://arxiv.org/abs/1902.00397))
-1.1 | Improving the satisfaction of constraints including long navigations. Now, the search component of PLEDGE includes all navigable elements within a given constraint in the set of objects/links that can be dynamically tweaked (added or deleted) at run time.
-1.2 | Adding support for **union** and **intersection** operation for colelctions in the search component of PLEDGE.
+Version | Date  | Description  
+--- | ---| ---------------------------------------
+**1.0** | 31/01/2019 | First prototype of the tool (tested over the three case studies of the paper "Practical Model-driven Data Generation for System Testing" available at [link](https://arxiv.org/abs/1902.00397))
+**1.1** | 13/03/2019 |  Improving the satisfaction of constraints including long navigations. Now, the search component of PLEDGE includes all navigable elements within a given constraint in the set of objects/links that can be dynamically tweaked (added or deleted) at run time.
+**1.2** | 20/03/2019 |   Extending the search component of PLEDGE  to support  **union** and  **intersection** operations. 
