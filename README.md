@@ -1,4 +1,4 @@
-# PLEDGE
+# PLEDGE (Version 1.2)
 PLEDGE: PracticaL and Efficient Data GEnerator for UML. 
 
 # Story behind it: 
@@ -10,7 +10,7 @@ Motivated by improving the feasibility and scalability of data generation for sy
 In a nutshell, PLEDGE works by first transforming all the constraints ascribed to a UML data model into a single constraint. This single constraint is represented in the Negation Normal Form (NNF). The tool then distributes the responsibility of solving the different subformulas in this normal form over (metaheuristic) search and SMT. Intuitively, search handles subformulas whose satisfaction involves structural tweaks to the instance model, i.e., additions and deletions of objects and links. SMT handles subformulas involving only primitive attributes, i.e., attributes with primitive types. These subformulas, if satisfiable, can be solved without structural tweaks. Many such subformulas, e.g., those whose symbols are within linear arithmetic, can be efficiently handled by background SMT theories. Finally, search and SMT are both tasked with handling subformulas whose satisfaction may require a combination of structural tweaks and value assignments to primitive attributes.
 
 # System requirements:
-- [Java SE Runtime Environment 8](https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) (or higher)
+- [Java Development Kit 1.8.0](https://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) (or higher)
 - [Z3](https://drive.google.com/file/d/1igvUmfkWWQ811Fs_RInuyz34SJj2ELQ0/view)  (version 4.5.1); Installation instructions for Z3 can be found at [link](https://github.com/Z3Prover/z3).
 
 # Usage instructions:
@@ -25,8 +25,9 @@ In a nutshell, PLEDGE works by first transforming all the constraints ascribed t
 - **nonEmptinessConstraint**: contains the non-emptiness constraint for excluding vacious solutions
 
 
-
 We provide default configuration files under **main_directory/config/**: configForCaseA.properties, configForCaseB.properties, and configForCaseC.properties. For example, copy and paste the content of configForCaseB.properties into solver.properties file to ask the tool to generate test data for the case staudy denoted Case B.
+
+
 
 3.	From your terminal, go to the **main_directory**. For example, in macOS write the following in your terminal: `cd {path to main_directory}`
 
@@ -34,3 +35,10 @@ We provide default configuration files under **main_directory/config/**: configF
 
 5.	If a solution is found, then the generated instance model can be found under **main_directory/generatedData/**
 
+# Changelog
+
+Version | Description  
+--------------------------------------- | ---------------------------------------
+1.0 | First prototype of the tool (tested over the three case studies of the paper "Practical Model-driven Data Generation for System Testing" available at [link](https://arxiv.org/abs/1902.00397))
+1.1 | Improving the satisfaction of constraints including long navigations. Now, the search component of PLEDGE includes all navigable elements within a given constraint in the set of objects/links that can be dynamically tweaked (added or deleted) at run time.
+1.2 | Adding support for **union** and **intersection** operation for colelctions in the search component of PLEDGE.
