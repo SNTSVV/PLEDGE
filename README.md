@@ -1,4 +1,4 @@
-# PLEDGE (Version 1.2)
+# PLEDGE (Version 1.3)
 PLEDGE: PracticaL and Efficient Data GEnerator for UML. 
 
 # Story behind it: 
